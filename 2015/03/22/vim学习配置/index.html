@@ -1,0 +1,106 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="this is amazing"><title>vim学习配置 | Matafight's world</title><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/5.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/grids-responsive-min.css"><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">vim学习配置</h1><a id="logo" href="/.">Matafight's world</a><p class="description">点滴进步</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">vim学习配置</h1><div class="post-meta">Mar 22, 2015<span> | </span><span class="category"><a href="/categories/工具/">工具</a></span><script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><a data-thread-key="2015/03/22/vim学习配置/" href="/2015/03/22/vim学习配置/#comments" class="ds-thread-count"></a><div class="post-content"><ol>
+<li>在软件中心搜索gvim装了图形界面版的vim</li>
+<li>vim 的配置文件路径是 ／etc/vim/vimrc 或 /etc/vim/gvimrc 这里的配置文件是针对所有用户的,如果想只配置当前用户的配置文件在目录 ~/ 下新建.vimrc文件</li>
+<li>vim每次启动的时候都会读取配置文件对程序进行配置.</li>
+<li>vim有很多<a href="http://www.vim.org/scripts/script_search_results.php?order_by=downloads" target="_blank" rel="noopener">插件</a> 解压到$home/.vim 目录下</li>
+<li><p>插件的安装方法:</p>
+<pre><code>    a.在home下 新建目录.vim
+    b.在 .vim 目录下解压插件
+
+http://easwy.com/blog/archives/advanced-vim-skills-taglist-plugin/
+</code></pre></li>
+<li><p>vim 常用命令</p>
+<pre><code>a. 光标移动初级版 h,j,k,l 分别对用 左,下,上,右
+ b. 光标移动高级版: ^:到一行的第一个不是blank字符的行头. 
+               0: y移动到一行的开头.
+               $:移动到行尾.
+               g_ : 移动到行尾第一个不是blank的字符.     
+               gg: 移动到第一行
+               NG :移动到本文的第N行
+               G:移动到最后一行
+               w:到下一个单词的开头
+               e:到下一个单词的结尾(对于中文来说vim把连在一起的中文当做一个单词)
+                  b:到前一个单词的开头.
+c.插入 删除 复制 粘贴
+                i:在光标前插入
+                a:在光标后插入
+                o:在下一行插入
+                O:在前一行插入
+                dd:删除当前行
+                dw:删除当前单词
+                x:删除当前字母
+                yy:复制当前行
+                p:粘贴
+                u:撤消(undo)
+                ctrl+r : redo
+
+d.块操作
+              v:可视化选择,可配合复制粘贴
+              ctrl+v:同上
+              可用块操作来进行块注释:
+              ^ + &lt;C-V&gt; + j or k + I + &quot;注释符&quot; + esc
+
+e.自动提示
+            ctrl+n or ctrl+p
+</code></pre></li>
+<li><p>windows下Gvim配置python开发环境 <a href="http://www.furion.info/24.html" target="_blank" rel="noopener">超详细</a></p>
+</li>
+<li><p>windows 下配置ctags+taglist</p>
+<p>先去下载<a href="http://www.vim.org/scripts/script.php?script_id=273" target="_blank" rel="noopener">taglists</a>，解压文件得到doc和plugin两个目录，两个目录下的文件分别是taglist的提示文件和taglist的插件，将doc下的taglist.txt复制到vim安装目录下的doc文件夹中，将plugin目录下的taglist.vim 复制到plugin文件夹。</p>
+<p>之后下载<a href="http://ctags.sourceforge.net/" target="_blank" rel="noopener">ctags</a>，解压，将其中的ctags.exe 直接复制到gvim安装目录下（与vim.exe在同一个目录）<br>之后在_vimrc 配置文件中加入如下两句：<br> set tags=tags：<br> set autochdir<br>这个命令让vim首先在当前目录寻找tags 文件，如果没有找到，使用第二条命令自动递归父目录继续寻找。</p>
+<p>配置完毕，在gvim中输入 :TlistToggle 切换taglist窗口</p>
+<p>切换到代码所在文件夹，在cmd 中输入 ctags -R （要配置gvim安装目录的环境变量）生成tags文件</p>
+</li>
+<li><p>gvim 下字符的查找替换:</p>
+<p>语法为 :[addr]s/源字符串/目的字符串/[option]<br>全局替换命令为：:%s/源字符串/目的字符串/g<br>[addr] 表示检索范围，省略时表示当前行。<br>如：“1，20” ：表示从第1行到20行；<br>“%” ：表示整个文件，同“1,$”；<br>“. ,$” ：从当前行到文件尾；<br>s : 表示替换操作<br>[option] : 表示操作类型<br>如：g 表示全局替换;<br>c 表示进行确认<br>p 表示替代结果逐行显示（Ctrl + L恢复屏幕）；<br>省略option时仅对每行第一个匹配串进行替换；<br>如果在源字符串和目的字符串中出现特殊字符，需要用<strong>”\”</strong>转义</p>
+<p>e.g.  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">:%s/perm/pm/g  </span><br><span class="line">表示将perm替换为pm，但是这个命令会将含有perm作为子串的字符串中的perm替换为pm，如果要全字符匹配，命令为</span><br><span class="line">:%s/\&lt;perm\&gt;/pm/g</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p><strong>参考</strong>：<a href="http://wdicc.com/search-in-vim/" target="_blank" rel="noopener">http://wdicc.com/search-in-vim/</a></p>
+<ol>
+<li>5/8，今天准备安装vundle，vim的一个插件管理器，按照官网的操作<a href="https://github.com/gmarik/Vundle.vim/wiki/Vundle-for-Windows" target="_blank" rel="noopener">https://github.com/gmarik/Vundle.vim/wiki/Vundle-for-Windows</a>出现了跟这个上面<a href="https://github.com/gmarik/Vundle.vim/issues/525" target="_blank" rel="noopener">https://github.com/gmarik/Vundle.vim/issues/525</a>一样的问题，最终按照这个方法解决了，我只想说:windows真TM没人权，安装个什么东西都是各种问题<br>5/9 update ,昨天还是可以的，今天又不行了，echo expand(‘~’)给我输出的路径是“C:\windows\system32\config\systemprofile”，我只想说，这是什么鬼，昨天还是”C:\Users\guo”呢，今天就变了，不过我将路径换成    <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">set</span> rtp+=<span class="variable">$vim</span>/vimfiles/bundle/Vundle.vim</span><br><span class="line"><span class="built_in">let</span> path=<span class="string">'$vim/vimfiles/bundle'</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>这样终于可以了，:echo $vim 输出的路径正是vim的安装路径了，==！。还是要说一句，windows实在是太不适合开发了，搭个环境都要死人了==！<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">PluginUpdate</span><br><span class="line">PluginClean 清理插件</span><br><span class="line">PluginList 列出所有插件</span><br><span class="line">PluginSearch XXX 搜索插件,-&gt; 选中插件 按 i 安装 -&gt;在 vimrc文件中添加Plugin XXX 声明</span><br></pre></td></tr></table></figure></p>
+<p>在vimrc中配置 Plugin 时，只需要写 Plugin ‘user/repo’就行了（对应着github的username和插件的repo），如果没有加/ 则vundle 默认从    vim script: <a href="https://github.com/vim-scripts/" target="_blank" rel="noopener">https://github.com/vim-scripts/</a> 去取<br><a href="http://xugming.iteye.com/blog/333194" target="_blank" rel="noopener">http://xugming.iteye.com/blog/333194</a>上面有详细的关于路径的介绍<br><a href="http://foocoder.com/blog/mei-ri-vimcha-jian-kai-pian-zhi-vundle.html/" target="_blank" rel="noopener">http://foocoder.com/blog/mei-ri-vimcha-jian-kai-pian-zhi-vundle.html/</a></p>
+</div><script type="text/javascript" src="/js/share.js?v=0.0.0" async></script><a data-url="http://matafight.github.io/2015/03/22/vim学习配置/" data-id="cjb4e180u002idgthrauxp5vg" class="article-share-link">分享到</a><div class="tags"><a href="/tags/工具/">工具</a></div><div class="post-nav"><a href="/2015/03/22/抽屉原理/" class="pre">抽屉原理</a><a href="/2015/03/20/装个ubuntu/" class="next">装个ubuntu</a></div><div data-thread-key="2015/03/22/vim学习配置/" data-title="vim学习配置" data-url="http://matafight.github.io/2015/03/22/vim学习配置/" class="ds-share flat"><div class="ds-share-inline"><ul class="ds-share-icons-16"><li data-toggle="ds-share-icons-more"><a href="javascript:void(0);" class="ds-more">分享到：</a></li><li><a href="javascript:void(0);" data-service="weibo" class="ds-weibo">微博</a></li><li><a href="javascript:void(0);" data-service="qzone" class="ds-qzone">QQ空间</a></li><li><a href="javascript:void(0);" data-service="qqt" class="ds-qqt">腾讯微博</a></li><li><a href="javascript:void(0);" data-service="wechat" class="ds-wechat">微信</a></li></ul><div class="ds-share-icons-more"></div></div></div><div data-thread-key="2015/03/22/vim学习配置/" data-title="vim学习配置" data-url="http://matafight.github.io/2015/03/22/vim学习配置/" data-author-key="1" class="ds-thread"></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" class="search-form"><input type="text" name="q" maxlength="20" placeholder="Search"/><input type="hidden" name="sitesearch" value="http://matafight.github.io"/></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/C/">C++</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Deep-Learning/">Deep Learning</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Matlab/">Matlab</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/kaggle/">kaggle</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/machine-learning/">machine learning</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/sgd/">sgd</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/tensorflow/">tensorflow</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/vim/">vim</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/其他/">其他</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/博客本身/">博客本身</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/机器学习/">机器学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/杂记-Matlab/">杂记|Matlab</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/爬虫/">爬虫</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/知乎/">知乎</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/deep-learning/" style="font-size: 15px;">deep learning</a> <a href="/tags/Deep-Learning/" style="font-size: 15px;">Deep Learning</a> <a href="/tags/bayes/" style="font-size: 15px;">bayes</a> <a href="/tags/XGBoost/" style="font-size: 15px;">XGBoost</a> <a href="/tags/Model-Selection/" style="font-size: 15px;">Model-Selection</a> <a href="/tags/Cython/" style="font-size: 15px;">Cython</a> <a href="/tags/latex/" style="font-size: 15px;">latex</a> <a href="/tags/kaggle/" style="font-size: 15px;">kaggle</a> <a href="/tags/machine-learning/" style="font-size: 15px;">machine learning</a> <a href="/tags/normalization/" style="font-size: 15px;">normalization</a> <a href="/tags/python/" style="font-size: 15px;">python</a> <a href="/tags/编码/" style="font-size: 15px;">编码</a> <a href="/tags/spider/" style="font-size: 15px;">spider</a> <a href="/tags/毕设/" style="font-size: 15px;">毕设</a> <a href="/tags/FAQ/" style="font-size: 15px;">FAQ</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/pandas/" style="font-size: 15px;">pandas</a> <a href="/tags/c/" style="font-size: 15px;">c++</a> <a href="/tags/好的博客/" style="font-size: 15px;">好的博客</a> <a href="/tags/数学/" style="font-size: 15px;">数学</a> <a href="/tags/求职/" style="font-size: 15px;">求职</a> <a href="/tags/machien-learning/" style="font-size: 15px;">machien learning</a> <a href="/tags/正则化/" style="font-size: 15px;">正则化</a> <a href="/tags/hexo/" style="font-size: 15px;">hexo</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/sgd/" style="font-size: 15px;">sgd</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最新文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/11/05/Deep-Learning-Chapter16/">Deep Learning Chapter16</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/19/CNN结构的发展/">CNN结构的发展</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/25/Deep-learning-chapter10-part-1/">Deep learning chapter10</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/17/广义线性模型/">广义线性模型</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/29/gbdt-xgboost与lightgbm/">gbdt,xgboost与lightgbm</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/05/kaggle竞赛总结/">kaggle竞赛总结</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/30/python中的编码问题/">python中的编码问题</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/24/kaggle经验/">kaggle经验</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/12/cython-introduction-md/">Cython简单介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/23/kaggle-入门/">kaggle 入门</a></li></ul></div><div class="widget"><div class="comments-title"><i class="fa fa-comment-o"> 最近评论</i></div><div data-num-items="5" data-show-avatars="0" data-show-time="1" data-show-admin="0" data-excerpt-length="32" data-show-title="1" class="ds-recent-comments"></div></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="https://tsien.github.io/" title="tsien" target="_blank">tsien</a><ul></ul><a href="http://www.ruanyifeng.com/blog/" title="阮一峰的网络日志" target="_blank">阮一峰的网络日志</a><ul></ul><a href="http://blog.csdn.net/abcjennifer/article/category/1226975" title="Rachel Zhang的专栏" target="_blank">Rachel Zhang的专栏</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">© <a href="/." rel="nofollow">Matafight's world.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="/css/jquery.fancybox.css?v=0.0.0"><script>var duoshuoQuery = {short_name:'matafight1994'};
+(function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0]
+        || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div><!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body></html>
