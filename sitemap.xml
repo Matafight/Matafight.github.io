@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://matafight.github.io/about/index.html</loc>
+    
+    <lastmod>2017-12-13T01:47:27.632Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://matafight.github.io/2015/10/04/%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB%E9%85%8D%E7%BD%AE/</loc>
     
     <lastmod>2017-12-13T01:41:37.582Z</lastmod>
@@ -26,13 +33,6 @@
     <loc>http://matafight.github.io/categories/index.html</loc>
     
     <lastmod>2017-12-12T13:56:25.589Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://matafight.github.io/about/index.html</loc>
-    
-    <lastmod>2017-12-12T13:56:25.588Z</lastmod>
     
   </url>
   
