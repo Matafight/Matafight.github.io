@@ -1,0 +1,84 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="this is amazing"><title>git note | Matafight's world</title><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/5.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/grids-responsive-min.css"><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">git note</h1><a id="logo" href="/.">Matafight's world</a><p class="description">点滴进步</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">git note</h1><div class="post-meta">Jan 12, 2018<span> | </span><span class="category"><a href="/categories/git/">git</a></span><script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><a data-thread-key="2018/01/12/git-note/" href="/2018/01/12/git-note/#comments" class="ds-thread-count"></a><div class="post-content"><h2 id="git环境中的三个重要概念"><a href="#git环境中的三个重要概念" class="headerlink" title="git环境中的三个重要概念"></a>git环境中的三个重要概念</h2><ul>
+<li>工作目录</li>
+<li>本地仓库</li>
+<li>远程仓库<br>用户在工作目录中更改的文件通过stage 和 commit 提交到本地仓库，本地仓库通过push命令同步到远程仓库</li>
+</ul>
+<h2 id="checkout命令"><a href="#checkout命令" class="headerlink" title="checkout命令"></a>checkout命令</h2><ul>
+<li>新建分支: git checkout -b ‘branch-name’</li>
+<li>切换分支： git checkout ‘branckname’</li>
+<li>查看分支： git branch</li>
+<li>如果commit了错误的代码怎么办？ 首先通过git log 命令查看历史版本，之后通过 git checkout \<hash-name\>切换到指定位置。<br><img src="http://7xiegr.com1.z0.glb.clouddn.com/git1.png" alt=""><br><img src="http://7xiegr.com1.z0.glb.clouddn.com/git2.png" alt=""><br>HEAD指针指向新的位置后，如果在此处新建一个提交会产生一个新的未命名的分支<br><img src="http://7xiegr.com1.z0.glb.clouddn.com/git3.png" alt=""><br>如果此时通过 git checkout master命令回到主分支的话，该新的提交会丢失，怎么做才能不丢失呢？通过git checkout -b newbranchname 在该新的提交的基础上新建一个分支。这样即使回到了主分支，newbranchname这个分支也不会丢失。在master分支通过执行 git merge newbranchename 合并分支。<br><img src="http://7xiegr.com1.z0.glb.clouddn.com/git4.png" alt=""></hash-name\></li>
+</ul>
+<h2 id="删除本地和远程库上的master-分支？（主要是因为已经在dev分支上做了很多改变，merge-到-master-分支上会产生很多麻烦，不如直接删除master-分支）"><a href="#删除本地和远程库上的master-分支？（主要是因为已经在dev分支上做了很多改变，merge-到-master-分支上会产生很多麻烦，不如直接删除master-分支）" class="headerlink" title="删除本地和远程库上的master 分支？（主要是因为已经在dev分支上做了很多改变，merge 到 master 分支上会产生很多麻烦，不如直接删除master 分支）"></a>删除本地和远程库上的master 分支？（主要是因为已经在dev分支上做了很多改变，merge 到 master 分支上会产生很多麻烦，不如直接删除master 分支）</h2><ul>
+<li><p>git checkout -b dev //新建并切换到 dev分支</p>
+</li>
+<li><p>先git checkout dev 到 dev分支</p>
+</li>
+<li><p>在github网页端设置 default branch 为 dev 分支</p>
+</li>
+<li>git branch -D  master //删除本地master分支</li>
+<li><p>git push origin :master //删除远程master 分支</p>
+</li>
+<li><p>然后可以重新新建一个master 分支，push当前代码到master 分支上，再设置default branch为master 分支</p>
+</li>
+</ul>
+<h2 id="如何只clone-除了master分支之外的其他分支？"><a href="#如何只clone-除了master分支之外的其他分支？" class="headerlink" title="如何只clone 除了master分支之外的其他分支？"></a>如何只clone 除了master分支之外的其他分支？</h2><ul>
+<li><p>先使用标准的clone 命令，git clone XXX.git</p>
+</li>
+<li><p>之后 git branch -a 查看所有分支，会显示:</p>
+<ul>
+<li>origin/master</li>
+<li>origin/dev</li>
+</ul>
+</li>
+<li><p>然后直接： git checkout origin/dev 切换到dev分支</p>
+</li>
+</ul>
+<h2 id="如果不小心-commit-了一个错误的代码，或者merge出现了错误怎么恢复之前的状态？"><a href="#如果不小心-commit-了一个错误的代码，或者merge出现了错误怎么恢复之前的状态？" class="headerlink" title="如果不小心 commit 了一个错误的代码，或者merge出现了错误怎么恢复之前的状态？"></a>如果不小心 commit 了一个错误的代码，或者merge出现了错误怎么恢复之前的状态？</h2><ul>
+<li>先用git -reflog 查看仓库commit状态，会看到这样的状态：<br><img src="http://7xiegr.com1.z0.glb.clouddn.com/git5.png" alt=""></li>
+<li>如果想恢复到某个具体地时刻点，可以强制转换:</li>
+<li>git reset –hard @{2}，表示恢复到 HEAD@{2}时的状态</li>
+</ul>
+<h2 id="git-fetch-git-merge-与-git-pull-的区别与联系"><a href="#git-fetch-git-merge-与-git-pull-的区别与联系" class="headerlink" title="git fetch,git merge 与 git pull 的区别与联系"></a>git fetch,git merge 与 git pull 的区别与联系</h2><ul>
+<li>git fetch &lt;远程主机名&gt;&lt;分支名&gt; 用来获得远程主机上的分支的内容<ul>
+<li>git fetch origin master 取回origin 主机上的master 分支</li>
+</ul>
+</li>
+<li>git branch -r ,可以用来查看远程分支</li>
+<li><p>git branch -a 查看所有分支，包括本地分支和远程分支</p>
+</li>
+<li><p>当 使用命令 git fetch origin master 之后，可以 git checkout -b newBran origin/master 创建基于 origin/master分支的本地分支</p>
+</li>
+<li><p>注意，fetch下来的分支并没有与本地分支合并，</p>
+</li>
+<li><p>需要使用 git merge origin/master 将其与本地分支合并</p>
+</li>
+<li><p>而git pull origin master 命令，则是上述两个命令的合体版本，先获得origin/master 上的内容然后与本地分支合并</p>
+</li>
+</ul>
+<h2 id="git-push-命令"><a href="#git-push-命令" class="headerlink" title="git push 命令"></a>git push 命令</h2><ul>
+<li><p>git push &lt;远程主机名&gt; &lt;本地分支名&gt;：&lt;远程分支名&gt;</p>
+<ul>
+<li><p>如果省略远程分支名，则表示将本地分支推送到与之有追踪关系的远程分支，如果该远程分支不存在，就会新建一个远程分支。</p>
+</li>
+<li><p>如果省略本地分支名，表示删除远程分支</p>
+<ul>
+<li>git push origin :master</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="如何将git-add-与-git-commit-缩成一步写？"><a href="#如何将git-add-与-git-commit-缩成一步写？" class="headerlink" title="如何将git add 与 git commit 缩成一步写？"></a>如何将git add 与 git commit 缩成一步写？</h2><pre><code>- 使用git commit  -am &quot;message&quot;
+</code></pre><h2 id="git-查看远程其他分支，并切换到其他分支"><a href="#git-查看远程其他分支，并切换到其他分支" class="headerlink" title="git 查看远程其他分支，并切换到其他分支"></a>git 查看远程其他分支，并切换到其他分支</h2><pre><code>- git branch -r 查看
+- git check origin/otherbranch 切换
+</code></pre></div><script type="text/javascript" src="/js/share.js?v=0.0.0" async></script><a data-url="http://matafight.github.io/2018/01/12/git-note/" data-id="cjcbiyyk1000x4gthn7ydrb0g" class="article-share-link">分享到</a><div class="tags"><a href="/tags/git/">git</a></div><div class="post-nav"><a href="/2017/11/05/Deep-Learning-Chapter16/" class="next">Deep Learning Chapter16</a></div><div data-thread-key="2018/01/12/git-note/" data-title="git note" data-url="http://matafight.github.io/2018/01/12/git-note/" class="ds-share flat"><div class="ds-share-inline"><ul class="ds-share-icons-16"><li data-toggle="ds-share-icons-more"><a href="javascript:void(0);" class="ds-more">分享到：</a></li><li><a href="javascript:void(0);" data-service="weibo" class="ds-weibo">微博</a></li><li><a href="javascript:void(0);" data-service="qzone" class="ds-qzone">QQ空间</a></li><li><a href="javascript:void(0);" data-service="qqt" class="ds-qqt">腾讯微博</a></li><li><a href="javascript:void(0);" data-service="wechat" class="ds-wechat">微信</a></li></ul><div class="ds-share-icons-more"></div></div></div><div data-thread-key="2018/01/12/git-note/" data-title="git note" data-url="http://matafight.github.io/2018/01/12/git-note/" data-author-key="1" class="ds-thread"></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" class="search-form"><input type="text" name="q" maxlength="20" placeholder="Search"/><input type="hidden" name="sitesearch" value="http://matafight.github.io"/></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/C/">C++</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Deep-Learning/">Deep Learning</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Matlab/">Matlab</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/kaggle/">kaggle</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/machine-learning/">machine learning</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/sgd/">sgd</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/tensorflow/">tensorflow</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/vim/">vim</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/其他/">其他</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/博客本身/">博客本身</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/机器学习/">机器学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/杂记-Matlab/">杂记|Matlab</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/爬虫/">爬虫</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/知乎/">知乎</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/spider/" style="font-size: 15px;">spider</a> <a href="/tags/Deep-Learning/" style="font-size: 15px;">Deep Learning</a> <a href="/tags/XGBoost/" style="font-size: 15px;">XGBoost</a> <a href="/tags/bayes/" style="font-size: 15px;">bayes</a> <a href="/tags/Model-Selection/" style="font-size: 15px;">Model-Selection</a> <a href="/tags/Cython/" style="font-size: 15px;">Cython</a> <a href="/tags/git/" style="font-size: 15px;">git</a> <a href="/tags/kaggle/" style="font-size: 15px;">kaggle</a> <a href="/tags/machine-learning/" style="font-size: 15px;">machine learning</a> <a href="/tags/latex/" style="font-size: 15px;">latex</a> <a href="/tags/normalization/" style="font-size: 15px;">normalization</a> <a href="/tags/python/" style="font-size: 15px;">python</a> <a href="/tags/编码/" style="font-size: 15px;">编码</a> <a href="/tags/毕设/" style="font-size: 15px;">毕设</a> <a href="/tags/deep-learning/" style="font-size: 15px;">deep learning</a> <a href="/tags/pandas/" style="font-size: 15px;">pandas</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/c/" style="font-size: 15px;">c++</a> <a href="/tags/FAQ/" style="font-size: 15px;">FAQ</a> <a href="/tags/好的博客/" style="font-size: 15px;">好的博客</a> <a href="/tags/求职/" style="font-size: 15px;">求职</a> <a href="/tags/machien-learning/" style="font-size: 15px;">machien learning</a> <a href="/tags/数学/" style="font-size: 15px;">数学</a> <a href="/tags/正则化/" style="font-size: 15px;">正则化</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/hexo/" style="font-size: 15px;">hexo</a> <a href="/tags/sgd/" style="font-size: 15px;">sgd</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最新文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/01/12/git-note/">git note</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/05/Deep-Learning-Chapter16/">Deep Learning Chapter16</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/19/CNN结构的发展/">CNN结构的发展</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/25/Deep-learning-chapter10-part-1/">Deep learning chapter10</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/17/广义线性模型/">广义线性模型</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/29/gbdt-xgboost与lightgbm/">gbdt,xgboost与lightgbm</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/05/kaggle竞赛总结/">kaggle竞赛总结</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/30/python中的编码问题/">python中的编码问题</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/24/kaggle经验/">kaggle经验</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/12/cython-introduction-md/">Cython简单介绍</a></li></ul></div><div class="widget"><div class="comments-title"><i class="fa fa-comment-o"> 最近评论</i></div><div data-num-items="5" data-show-avatars="0" data-show-time="1" data-show-admin="0" data-excerpt-length="32" data-show-title="1" class="ds-recent-comments"></div></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="https://tsien.github.io/" title="tsien" target="_blank">tsien</a><ul></ul><a href="http://www.ruanyifeng.com/blog/" title="阮一峰的网络日志" target="_blank">阮一峰的网络日志</a><ul></ul><a href="http://blog.csdn.net/abcjennifer/article/category/1226975" title="Rachel Zhang的专栏" target="_blank">Rachel Zhang的专栏</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">© <a href="/." rel="nofollow">Matafight's world.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="/css/jquery.fancybox.css?v=0.0.0"><script>var duoshuoQuery = {short_name:'matafight1994'};
+(function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0]
+        || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
