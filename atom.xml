@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://matafight.github.io/"/>
-  <updated>2019-03-24T04:03:23.041Z</updated>
+  <updated>2019-06-21T13:53:43.572Z</updated>
   <id>http://matafight.github.io/</id>
   
   <author>
@@ -17,20 +17,45 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>lightgbm 相关参数</title>
-    <link href="http://matafight.github.io/2019/03/24/lightgbm-%E7%9B%B8%E5%85%B3%E5%8F%82%E6%95%B0/"/>
-    <id>http://matafight.github.io/2019/03/24/lightgbm-相关参数/</id>
-    <published>2019-03-24T03:42:53.000Z</published>
-    <updated>2019-03-24T04:03:23.041Z</updated>
+    <title>理解word2vec</title>
+    <link href="http://matafight.github.io/2019/06/21/%E7%90%86%E8%A7%A3word2vec/"/>
+    <id>http://matafight.github.io/2019/06/21/理解word2vec/</id>
+    <published>2019-06-21T13:46:47.000Z</published>
+    <updated>2019-06-21T13:53:43.572Z</updated>
     
-    <content type="html"><![CDATA[<h2 id="boosting"><a href="#boosting" class="headerlink" title="boosting"></a>boosting</h2><ol><li>boosting type,对应的参数名为: boosting_type, boost:<br> a. gbdt [default]<br> b. gbrt<br> c. rf<br> d. random_forest<br> e. dart<br> f. goss</li></ol><h2 id="目标函数"><a href="#目标函数" class="headerlink" title="目标函数"></a>目标函数</h2><h2 id="训练参数"><a href="#训练参数" class="headerlink" title="训练参数"></a>训练参数</h2><ol><li>num_iterations, alias: num_iteration, n_iter, num_tree, num_round, num_rounds, num_boost_round. 默认100</li><li></li></ol><h2 id="sklearn参数"><a href="#sklearn参数" class="headerlink" title="sklearn参数"></a>sklearn参数</h2>]]></content>
+    <content type="html"><![CDATA[<p>自然语言处理任务中要处理的对象是单词或者词组，单词可以看做是类别型特征，虽然tree-based模型可以采用类别特征，但包括神经网络在内的大部分机器学习模型只能处理数值型特征。因此，在使用模型时通常需要将单词等特征转化为数值。最常见的方法是one-hot encoding。但这种方法编码出来的特征非常稀疏，不利于特征学习，而且无法度量单词之间的相似度。google在13年提出的word2vec方法利用一个浅层的神经网络将稀疏的特征向量映射到稠密的低维空间中，其动机是：位于相同上下文的单词应当有相似的语义，利用的是单词的共现性。 准确的说，学习出单词的embedding只是模型的一个“副作用”，word2vec是一个框架，它包含两个建模函数，或者说是两个建模角度,分别是CBOW和Skip-Grams。</p><h2 id="基本原理："><a href="#基本原理：" class="headerlink" title="基本原理："></a>基本原理：</h2><h3 id="CBOW-通过上下文预测中间的单词"><a href="#CBOW-通过上下文预测中间的单词" class="headerlink" title="CBOW:通过上下文预测中间的单词"></a>CBOW:通过上下文预测中间的单词</h3><p>最大化似然函数<br>$$LL = \prod_{t=1}^Tp(w_t|context(w_t))$$<br>这个$context(w_t)$可以有多种方式处理。</p><h3 id="Skip-Grams-通过中间单词预测上下文"><a href="#Skip-Grams-通过中间单词预测上下文" class="headerlink" title="Skip-Grams: 通过中间单词预测上下文"></a>Skip-Grams: 通过中间单词预测上下文</h3><p>目标是最大化似然函数<br>$$LL = \prod<em>{i=1}^T\prod</em>{-c\le j\le c}p(w_{t+j}|w_t)$$<br>其中<br>$$p(w_o|w_i)=\frac{exp(v^{‘T}_ov<em>i)}{\sum</em>{c=1}^{D}exp(v^{‘T}_cv_i)}$$<br>对每个单词都对应两个向量$v^{‘}和v$。</p><h2 id="细节"><a href="#细节" class="headerlink" title="细节"></a>细节</h2><h3 id="CBOW"><a href="#CBOW" class="headerlink" title="CBOW"></a>CBOW</h3><p><img src="https://ws1.sinaimg.cn/large/6b6c6d13ly1g210b935ovj20pe0rmmya.jpg" alt="cbow"><br>基本原理如图所示，假设词典中共有$D$个单词，给定一句话的上下文有$c$个单词，所以需要先对每个单词做one-hot 编码，$x_i$实际上是一个大小为$D\times 1$的向量，矩阵$W<em>1\in R^{D\times e}$ 每一行都可以看做是一个单词的embedding，这是模型的参数，也是我们想得到的单词embedding。 中间的隐层<br> $$ h =\frac{1}{c}\sum</em>{i=1}^c x_i^{T}W_1,h\in R^{1\times e} $$<br>  系数矩阵$W_2 \in R^{e\times D}$ 将隐层的数据重新映射到整个字典空间中.<br>$$o = softmax(h\times W<em>2), o \in R^{1\times D},o</em>{i}\in [0,1]$$<br>输出概率最大的单词作为候选。这里的$W_1,W_2$分别对应上面公式中的$v^{‘},v$.</p><h3 id="Skip-Grams"><a href="#Skip-Grams" class="headerlink" title="Skip-Grams"></a>Skip-Grams</h3><p><img src="https://wx3.sinaimg.cn/large/6b6c6d13ly1g210b98vb1j20su0p4myb.jpg" alt="skip_gram"><br>Skip-Grams正好与CBOW的流程相反，其输入层$I$就是一个单词的one-hot编码，矩阵$W_1 \in R^{D\times e}$,<br>$$h = x_i\times W_1, h\in R^{1\times e}$$<br>输出层对应多个单词，对应每个单词都有一个softmax损失。将所有$c$个softmax损失相加就是总的损失。</p><h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>由于单词的空间$D$非常庞大，在计算softmax损失的时候需要对所有$D$个单词进行累加，这一方面非常耗时，另一方面会导致权重更新效率低下，因为每次只需要更新$c$个单词对应的权重，但却需要遍历所有单词。</p><h3 id="Hierarchical-Softmax"><a href="#Hierarchical-Softmax" class="headerlink" title="Hierarchical Softmax"></a>Hierarchical Softmax</h3><p>统计所有样本出现的频次，建立哈夫曼树，树的深度为$logD$,每个叶子节点都对应一个单词$w$,设$n(w,i)$表示从根节点出发能到达叶子节点$w$的路径上的第$i$个节点，并且$n(w,1)=root$,每个内部节点(包括根节点)都可以看做是神经网络中的一个二类分类节点，节点系数为$v<em>{n(w,i)}$.<br>以CBOW举例，获得隐节点向量$h$之后，就将$h$输入到哈夫曼树的根节点,在每个节点执行二类分类任务。$\sigma(x)=\frac{1}{1+e^{-x}}$,当$\sigma(h*v</em>{n(w,i)})&gt;0$时，就传递到左子树，反之，传递到右子树，直到叶子节点，叶子节点所在的单词就是我们要预测的值。</p><p>所以实际上层次softmax最多只需要计算$logD$次，每次都是一个二类分类问题。</p><h3 id="Negative-Sampling"><a href="#Negative-Sampling" class="headerlink" title="Negative Sampling"></a>Negative Sampling</h3><p>$$p(w_o|w_i)=\frac{exp(v^{‘T}_ov<em>i)}{\sum</em>{c=1}^{D}exp(v^{‘T}_cv_i)}$$<br>上式的分母是所有单词，实际上我们可以对单词分类，将我们当前关注的单词$W_i$对应的上下问认为是正类，将所有其他单词认为是负类，在分类的时候只需要区分当前单词是正类还是负类就行了，不需要具体计算每一个单词的概率。所以其实上式可以简化成:</p><p>$$p(w_0|w_i) = \sigma(v^{‘T}_ov_i)=\frac{1}{1+e^{-v^{‘T}_ov_i}}(当w_0属于正类) \<br>p(w_0|w_i) = 1-\sigma(v^{‘T}_ov_i)=1-\frac{1}{1+e^{-v^{‘T}_ov_i}}=\sigma(-v^{‘T}_ov_i)(当w_0属于负类)$$<br>这里的正类和负类只是相对于$w_i$来说的。</p><h4 id="对比"><a href="#对比" class="headerlink" title="对比"></a>对比</h4><p>如果采用softmax版本，对每个样本的最大似然函数:<br>$$ln(p(w_o|w_i))=v^{‘T}_ov<em>i-ln(\sum</em>{c=1}^{D}exp(v^{‘T}_cv_i))$$</p><p>如果采用负采样的二分类版本，在更新某个样本时的损失函数为:<br>$$ln(p(w_o|w_i))=ln\sigma(v^{‘T}_ov<em>i)+\sum</em>{k}^KE_{w\sim P_n(w)}ln\sigma(-v^{‘T}_ov_i)$$</p>]]></content>
     
     <summary type="html">
     
       
       
-        &lt;h2 id=&quot;boosting&quot;&gt;&lt;a href=&quot;#boosting&quot; class=&quot;headerlink&quot; title=&quot;boosting&quot;&gt;&lt;/a&gt;boosting&lt;/h2&gt;&lt;ol&gt;
-&lt;li&gt;boosting type,对应的参数名为: boosting_type, bo
+        &lt;p&gt;自然语言处理任务中要处理的对象是单词或者词组，单词可以看做是类别型特征，虽然tree-based模型可以采用类别特征，但包括神经网络在内的大部分机器学习模型只能处理数值型特征。因此，在使用模型时通常需要将单词等特征转化为数值。最常见的方法是one-hot encoding。
+      
+    
+    </summary>
+    
+      <category term="机器学习" scheme="http://matafight.github.io/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+    
+    
+      <category term="word2vec" scheme="http://matafight.github.io/tags/word2vec/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>lightgbm 相关参数</title>
+    <link href="http://matafight.github.io/2019/03/24/lightgbm-%E7%9B%B8%E5%85%B3%E5%8F%82%E6%95%B0/"/>
+    <id>http://matafight.github.io/2019/03/24/lightgbm-相关参数/</id>
+    <published>2019-03-24T03:42:53.000Z</published>
+    <updated>2019-03-24T04:13:13.994Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="主要参数"><a href="#主要参数" class="headerlink" title="主要参数"></a>主要参数</h2><ol><li><p>boosting type,对应的参数名为: boosting_type, boost:<br> a. gbdt [default]<br> b. gbrt<br> c. rf<br> d. random_forest<br> e. dart<br> f. goss</p></li><li><p>num_iterations, alias: num_iteration, n_iter, num_tree, num_round, num_rounds, num_boost_round. 默认100</p></li><li>learning_rate, 默认：0.1, alias: shrinkage_rate,eta</li><li>num_leaves, 默认：31, alias: num_leaf, max_leaves, max_leaf</li><li><p>tree_learner, 默认: serial, alias: tree, tree_type, tree_learner_type<br> a. serail<br> b. feature, alias: feature_parallel<br> c. data, alias: data_parallel<br> d. voting, alias: voting_parallel</p></li><li><p>max_depth</p></li><li>min_data_inf_leaf</li><li>min_sum_hessian_in_leaf</li><li>bagging_fraction</li><li>bagging_freq</li><li>begging_seed</li><li>feature_fraction</li><li>feature_fraction_seed</li><li>early_stopping_round</li><li>max_delta_step</li><li></li></ol><h2 id="目标函数"><a href="#目标函数" class="headerlink" title="目标函数"></a>目标函数</h2><h2 id="sklearn参数"><a href="#sklearn参数" class="headerlink" title="sklearn参数"></a>sklearn参数</h2>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;主要参数&quot;&gt;&lt;a href=&quot;#主要参数&quot; class=&quot;headerlink&quot; title=&quot;主要参数&quot;&gt;&lt;/a&gt;主要参数&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;boosting type,对应的参数名为: boosting_type, boost:&lt;br&gt; a. g
       
     
     </summary>
@@ -481,32 +506,6 @@
     
     
       <category term="deep learning" scheme="http://matafight.github.io/tags/deep-learning/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>python numpy中array 与 Matrix 的区别</title>
-    <link href="http://matafight.github.io/2015/10/31/python-numpy%E4%B8%ADarray-%E4%B8%8E-Matrix-%E7%9A%84%E5%8C%BA%E5%88%AB/"/>
-    <id>http://matafight.github.io/2015/10/31/python-numpy中array-与-Matrix-的区别/</id>
-    <published>2015-10-31T01:31:53.000Z</published>
-    <updated>2017-12-12T13:56:25.552Z</updated>
-    
-    <content type="html"><![CDATA[<p><strong>两种类型</strong><br>ndarray 与 matrix 是python中常用的存储数据的类型</p><p>numpy 中matrix 类型是2维的，而array可以是多维的，所以matrix可以看作是array的一个子集matrix支持的操作array 都支持，最常见的就是转置，numpy.transpose()<br>numpy中ones 和 zeros 返回的是narray类型的数据，值得注意的是当两个matrix 类型的数据相乘时是做的矩阵乘法，或者这样说：两个操作数中至少有一个是matrix类型时，做的是矩阵乘法，返回的是matrix类型，当两个操作数都是array类型时做的是element-wise 的乘法，即对应元素相乘，返回的类型还是array。</p><p>还有一种常见的存储数据的类型是list,使用list需要注意的是:当用list类型存储labels的时候，如果想用labels做矩阵运算,需要先把它转化为matrix 或 array 类型，转换后labels还是行向量，一般都要先转置变成列向量来处理</p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;&lt;strong&gt;两种类型&lt;/strong&gt;&lt;br&gt;ndarray 与 matrix 是python中常用的存储数据的类型&lt;/p&gt;
-&lt;p&gt;numpy 中matrix 类型是2维的，而array可以是多维的，所以matrix可以看作是array的一个子集matrix支持的操作a
-      
-    
-    </summary>
-    
-      <category term="机器学习" scheme="http://matafight.github.io/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
-    
-    
-      <category term="python" scheme="http://matafight.github.io/tags/python/"/>
     
   </entry>
   
