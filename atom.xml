@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://matafight.github.io/"/>
-  <updated>2019-06-21T13:53:43.572Z</updated>
+  <updated>2019-07-13T13:47:48.293Z</updated>
   <id>http://matafight.github.io/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Attention is all you need</title>
+    <link href="http://matafight.github.io/2019/07/13/Attention-is-all-you-need/"/>
+    <id>http://matafight.github.io/2019/07/13/Attention-is-all-you-need/</id>
+    <published>2019-07-13T13:46:53.000Z</published>
+    <updated>2019-07-13T13:47:48.293Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>###encoder-decoder框架</p><p>在nlp任务中，比如机器翻译，encoder-decoder是一种比较常用的学习框架，将原文x输入到encoder中，encoder输出context c作为decoder的部分输入，这里的c就包含了原文x的所有信息。</p><h4 id="RNN"><a href="#RNN" class="headerlink" title="RNN"></a>RNN</h4><p>RNN由于擅长处理序列特征，因此常被用在nlp任务中，经典的encoder-decoder框架就是基于RNN搭建而成。RNN的缺点在于其无法很好地并行化，这是由其工作原理决定的，当前时刻的输入依赖于上一时刻的输出，因此，其只能串行地运行</p><p><img src="https://wx1.sinaimg.cn/large/6b6c6d13ly1g49qx13slsj214o0ewtid.jpg" alt=""></p><h4 id="RNN-Attention"><a href="#RNN-Attention" class="headerlink" title="RNN+Attention"></a>RNN+Attention</h4><p>在上图中可以看到，encoder只输出一个context，decoder中的所有单词都基于相同的context，但是在机器翻译中这一点不符合直觉，因为翻译和原文中的单词通常是有对应关系的，所以对于每个decoder中的输入的hidden state都需要找到其对encoder中最感兴趣的hidden state。RNN存在长程梯度消失问题，对于较长的句子，很难希望通过将输入的序列转化为定长的向量来保存所有信息，Attention机制也能克服这个问题。</p><p>具体算法：</p><p>假设encoder 的每个hidden state 是 key,同时hidden state也是value, 则encoder会产生一个键值对，decoder的hidden state是query，那么在attention机制中，计算query的attention的方法就是：先计算query与encoder中所有key的相似性，把这个相似性作为权重，得到 各个key-value对的加权和作为query的attention输出。</p><p><img src="https://ws4.sinaimg.cn/large/6b6c6d13ly1g49r038ezwj213s0nqh83.jpg" alt=""></p><h4 id="RNN-Attention-Self-attention"><a href="#RNN-Attention-Self-attention" class="headerlink" title="RNN+Attention+Self attention"></a>RNN+Attention+Self attention</h4><p>Attention 是encoder和decoder之间的机制，而self attention 则是encoder或者decoder内部的机制。因为一句话是有上下文的，一句话中的单词可能依赖于这句话中的其他单词，比如：”我喜欢吃火锅，不喜欢吃醋“ 这句话中”喜欢“对“火锅“应该有比较高的关注度，”不喜欢“对“醋”有比较高的关注度。具体实现方式与attention类似，只需要在encoder或者decoder内部加一个或多个attention layer就可以实现self attention。</p><p><img src="https://wx4.sinaimg.cn/large/6b6c6d13ly1g49r0j2n15j20wi0swn92.jpg" alt=""></p><p>####Transformer</p><p>前面介绍的都是基于RNN的encoder-decoder模型，但是RNN本身的问题是无法并行化，Transformer 也有encoder和decoder两部分，它完全抛弃了RNN的结构，只用了Attention和self-attention，因此，Transformer相比之前基于RNN的模型更易并行化。</p><p><img src="//wx3.sinaimg.cn/large/6b6c6d13gy1g4v41ul814j20fm0nn77t.jpg" alt=""></p><h2 id="模型结构"><a href="#模型结构" class="headerlink" title="模型结构"></a>模型结构</h2><h3 id="Encoder-部分"><a href="#Encoder-部分" class="headerlink" title="Encoder 部分"></a>Encoder 部分</h3><p>输入一个sentence的embedding，先输入到一个self attention层，进行layer-norm之后进入到后面的 fully connected feed forward network中，encoder的output就是ffn 的输出加上layer norm之后的结果。 </p><h3 id="Decoder-部分"><a href="#Decoder-部分" class="headerlink" title="Decoder 部分"></a>Decoder 部分</h3><p>与encoder的区别在于decoder中会有来自encoder的cross-attention，并且decoder中attention信息的流动是单向的，decoder的input在self attention时只能“看到”其前部的信息，而“看不到”后面的信息，Transformer的这种结构使得其属于  <strong>language generation</strong> 模型。</p><h4 id="Scaled-dot-product-attention"><a href="#Scaled-dot-product-attention" class="headerlink" title="Scaled-dot-product attention"></a>Scaled-dot-product attention</h4><p>attention 中最核心的是三个 数组：key，query和value， scaled-dot-product attention 就是用内积衡量query和key之间的相似性，并将其作为key对应value的权重。</p><p><img src="//ws1.sinaimg.cn/large/6b6c6d13gy1g4v41erh2hj20dv02wjrd.jpg" alt=""></p><h4 id="Multi-head-attention"><a href="#Multi-head-attention" class="headerlink" title="Multi-head attention"></a>Multi-head attention</h4><p>论文提出了一种新的attention机制： Multi-head attention。它基于 Scaled-dot-product attention 而来， 它先将 key,query和value投影到n个指定大小的子空间中，然后在各个子空间分别做 scaled-dot-product attention，最后将n个子空间的attention的输出concat 在一起，然后最后经过一个线性变换将输出投影到指定大小的空间中。</p><h4 id="Fully-connected-feed-forward-network"><a href="#Fully-connected-feed-forward-network" class="headerlink" title="Fully connected feed-forward network"></a>Fully connected feed-forward network</h4><p>全连接前馈神经网络，论文中用了文本领域常用的一维卷积来实现</p><p><img src="//ws1.sinaimg.cn/large/6b6c6d13gy1g4v40p53ygj213q17679a.jpg" alt=""></p><h3 id="Positional-Encoding"><a href="#Positional-Encoding" class="headerlink" title="Positional Encoding"></a>Positional Encoding</h3><p>由于encoder的input中的token会关注所有其他token，而且到现在为止整个模型并没有考虑输入的顺序，所以将输入随便排序都不会影响结果，为了考虑序列顺序信息，论文将每个位置的input都加上其对应的positional encoding，其计算公式如下：</p><p><img src="//ws3.sinaimg.cn/large/6b6c6d13gy1g4v4gri6vkj20a9029glo.jpg" alt=""></p><h2 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h2><p>论文主要在machine translation数据集上进行了实验，包括了WMT 2014 English-to-German translation task  和 WMT 2014 English-to-French translation task 。结果当然也证明了该方法的有效性了。</p><p><a href="https://zhuanlan.zhihu.com/p/47282410" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/47282410</a></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;###encoder-decoder框架&lt;/p&gt;
+&lt;p&gt;在nlp任务中，比如机器翻译，encoder-decoder是一种比较常用的学习框架
+      
+    
+    </summary>
+    
+      <category term="machine learning" scheme="http://matafight.github.io/categories/machine-learning/"/>
+    
+    
+      <category term="attention" scheme="http://matafight.github.io/tags/attention/"/>
+    
+  </entry>
   
   <entry>
     <title>理解word2vec</title>
@@ -481,31 +507,6 @@
     
     
       <category term="pandas" scheme="http://matafight.github.io/tags/pandas/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>tensorflow 安装及使用</title>
-    <link href="http://matafight.github.io/2016/08/03/tenforflow/"/>
-    <id>http://matafight.github.io/2016/08/03/tenforflow/</id>
-    <published>2016-08-03T05:54:57.000Z</published>
-    <updated>2017-12-12T13:56:25.560Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="在ubuntu下安装tensorflow和使用tensorflow"><a href="#在ubuntu下安装tensorflow和使用tensorflow" class="headerlink" title="在ubuntu下安装tensorflow和使用tensorflow"></a><strong>在ubuntu下安装tensorflow和使用tensorflow</strong></h1><h2 id="1-安装cuda-cudnn"><a href="#1-安装cuda-cudnn" class="headerlink" title="1.安装cuda,cudnn"></a>1.安装cuda,cudnn</h2><p><em>a)</em><br>ubuntu下安装需要先安装g++<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install build-essential</span><br></pre></td></tr></table></figure></p><p><em>b)</em>从navida 官网下载cuda的deb文件<br>从命令行安装：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo dpkg -i cuda-repo-***.deb</span><br><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install cuda</span><br></pre></td></tr></table></figure></p><p>之后需要在.bashrc 中设置cuda的环境变量<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> LD_LIBRARY_PATH=<span class="string">"<span class="variable">$LD_LIBRARY_PATH</span>:/usr/local/cuda-7.5/lib64"</span></span><br><span class="line"><span class="built_in">export</span> CUDA_HOME=/usr/<span class="built_in">local</span>/cuda-7.5</span><br></pre></td></tr></table></figure></p><p>注意上述的命令中需要将cuda的相应版本改成自己下载的版本</p><p><em>c)</em><br>安装cudnn-v4<br>cudnn 的下载需要navidia的开发者账号，去注册一下就行，我的账号就是edu账号。<br>cudnn的具体安装方式参照的是tensorflow给出的安装指南</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Uncompress and copy the cuDNN files into the toolkit directory. Assuming the toolkit is installed <span class="keyword">in</span> /usr/<span class="built_in">local</span>/cuda, run the following commands (edited to reflect the cuDNN version you downloaded):</span><br><span class="line"></span><br><span class="line">tar xvzf cudnn-7.5-linux-x64-v4.tgz</span><br><span class="line">sudo cp cudnn-7.5-linux-x64-v4/cudnn.h /usr/<span class="built_in">local</span>/cuda/include</span><br><span class="line">sudo cp cudnn-7.5-linux-x64-v4/libcudnn* /usr/<span class="built_in">local</span>/cuda/lib64</span><br><span class="line">sudo chmod a+r /usr/<span class="built_in">local</span>/cuda/include/cudnn.h /usr/<span class="built_in">local</span>/cuda/lib64/libcudnn*</span><br></pre></td></tr></table></figure><p>注意上面的cudnn的路径有点不正确，需要根据具体的文件路径和相应的版本更改命令。</p><p><em>d)</em>关闭与nvidia 不兼容的nouveau<br>打开Terminal终端（Ctrl+Alt+T）<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo edit /etc/modprobe.d/blacklist-nouveau.conf</span><br></pre></td></tr></table></figure></p><p>在文件中写入：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">blacklist nouveau</span><br><span class="line">blacklist lbm-nouveau</span><br><span class="line">options nouveau modeset=0</span><br><span class="line"><span class="built_in">alias</span> nouveau off</span><br><span class="line"><span class="built_in">alias</span> lbm-nouveau off</span><br></pre></td></tr></table></figure></p><p>在terminal中执行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> options nouveau modeset=0 | sudo tee -a /etc/modprobe.d/nouveau-kms.conf</span><br><span class="line">sudo update-initramfs -u</span><br><span class="line">sudo reboot</span><br></pre></td></tr></table></figure></p><p><em>e)</em><br>验证cuda的安装<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /usr/<span class="built_in">local</span>/cuda/samples/1_Utilities/deviceQuery</span><br><span class="line">sudo make</span><br><span class="line">sudo ./deviceQuery</span><br><span class="line">result ：pass 则为安装成功。</span><br></pre></td></tr></table></figure></p><h2 id="2-安装tensorflow"><a href="#2-安装tensorflow" class="headerlink" title="2.安装tensorflow"></a>2.安装tensorflow</h2><p>使用官网的Anaconda的安装方式<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">conda create -n tensorflow python=2.7</span><br><span class="line"></span><br><span class="line"><span class="built_in">source</span> activate tensorflow</span><br><span class="line"></span><br><span class="line">(tensorflow)$ <span class="built_in">export</span> TF_BINARY_URL=https://storage.googleapis.com/tensorflow/linux/gpu/tensorflow-0.9.0-cp27-none-linux_x86_64.whl</span><br><span class="line"></span><br><span class="line">(tensorflow)$ pip install --upgrade <span class="variable">$TF_BINARY_URL</span></span><br></pre></td></tr></table></figure></p><p>测试安装：参考官网</p><p>使用anaconda安装方式的特点是，在Anaconda中独立出来一个环境，名字叫做tensorflow，每次要使用tensorflow的时候，先切换到这个环境，然后再这个环境中安装和运行相关程序。环境里面的python 与 anaconda中的python是相互独立的。</p><p>注意这里提供的安装方法与可能与个人的电脑相关设置有所不同，仅供参考</p><p>参考:<a href="http://blog.csdn.net/songrotek/article/details/50770154" target="_blank" rel="noopener">http://blog.csdn.net/songrotek/article/details/50770154</a></p><h2 id="3-tensorflow-相关用法"><a href="#3-tensorflow-相关用法" class="headerlink" title="3.tensorflow 相关用法"></a>3.tensorflow 相关用法</h2><p><a href="https://github.com/Matafight/TFstudyNotes" target="_blank" rel="noopener">https://github.com/Matafight/TFstudyNotes</a></p><p>to be continue…</p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h1 id=&quot;在ubuntu下安装tensorflow和使用tensorflow&quot;&gt;&lt;a href=&quot;#在ubuntu下安装tensorflow和使用tensorflow&quot; class=&quot;headerlink&quot; title=&quot;在ubuntu下安装tensorflow和使用ten
-      
-    
-    </summary>
-    
-      <category term="tensorflow" scheme="http://matafight.github.io/categories/tensorflow/"/>
-    
-    
-      <category term="deep learning" scheme="http://matafight.github.io/tags/deep-learning/"/>
     
   </entry>
   
